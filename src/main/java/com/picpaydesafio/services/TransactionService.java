@@ -4,7 +4,6 @@ import com.picpaydesafio.domain.Transaction;
 import com.picpaydesafio.domain.User;
 import com.picpaydesafio.dtos.TransactionDTO;
 import com.picpaydesafio.repositories.TransactionRepository;
-import com.picpaydesafio.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
