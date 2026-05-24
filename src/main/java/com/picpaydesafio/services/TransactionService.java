@@ -15,6 +15,12 @@ public class TransactionService {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private AuthorizationService authService;
 
     @Autowired
     private TransactionRepository repository;
@@ -25,6 +31,11 @@ public class TransactionService {
         User receiver = this.userService.findUserById(transactionDto.receiverId());
 
         this.userService.validateTransaction(sender, transactionDto.value());
+        // Consulta o serviço autorizador externo
+        boolean isAuthorized = this.authService.authorizeTransaction(sender, transactionDto.value());
+        if(!isAuthorized) {
+            throw new Exception("Transação não autorizada pelo serviço externo.");
+        }
 
         sender.setBalance(sender.getBalance().subtract(transactionDto.value()));
         receiver.setBalance(receiver.getBalance().add(transactionDto.value()));
@@ -38,7 +49,7 @@ public class TransactionService {
         this.userService.saveUser(sender);
         this.userService.saveUser(receiver);
         this.repository.save(newTransaction);
-
+        this.notificationService.sendNotification(receiver, "Dinheiro recebido com sucesso!");    
         return newTransaction;
     }
 }
